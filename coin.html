@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FC Coins Store - Buy FIFA 25 Coins</title>
+    <link rel="icon" type="image/x-icon"
+        href="fut.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'fifa-gold': '#FFD700',
+                        'fifa-dark': '#0F172A',
+                        'fifa-green': '#10B981'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+        * {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .coin-background {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 30%, #1e293b 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .coin-background::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
+        }
+
+        .coin-background.featured {
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 30%, #a855f7 100%);
+        }
+
+        .coin-background.featured::before {
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+        }
+
+        .fut-coin {
+            width: 32px;
+            height: 32px;
+            /* IF YOUR IMAGE IS THE FULL COIN:
+               Remove or comment out the original gradient background.
+               background: linear-gradient(135deg, #ffd700 0%, #ffed4a 30%, #ffd700 70%, #daa520 100%);
+            */
+
+            /* === ADD THIS SECTION FOR THE IMAGE === */
+            /* REPLACE THE URL BELOW with your actual FC Mobile Coin image (URL or base64) */
+            /* This is a placeholder SVG: */
+            background-image: url('fut.png');
+            background-size: contain;
+            /* Or 'cover', or a percentage like '90% 90%' */
+            background-repeat: no-repeat;
+            background-position: center;
+            /* ======================================= */
+
+            border-radius: 50%;
+            /* These text-related properties are no longer needed if it's an image */
+            /* display: flex; */
+            /* align-items: center; */
+            /* justify-content: center; */
+            /* font-weight: 900; */
+            /* font-size: 10px; */
+            /* color: #1a202c; */
+            box-shadow:
+                /* Adjust this shadow if your coin isn't primarily gold */
+                0 4px 12px rgba(255, 215, 0, 0.4),
+                inset 0 2px 4px rgba(255, 255, 255, 0.3),
+                inset 0 -2px 4px rgba(0, 0, 0, 0.2);
+            position: relative;
+        }
+
+        .fut-coin::after {
+            /* This shine effect might still look good on top of an image */
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            right: 2px;
+            bottom: 2px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 50%);
+        }
+
+
+        .coin-amount {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 900;
+            color: #ffd700;
+            text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
+            letter-spacing: -1px;
+        }
+
+        .gift-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 10px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            border: 2px solid transparent;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+            border-color: rgba(139, 92, 246, 0.2);
+        }
+
+        .product-card.selected {
+            border-color: #8b5cf6;
+            transform: translateY(-4px);
+            box-shadow: 0 12px 48px rgba(139, 92, 246, 0.25);
+        }
+
+        .delivery-info {
+            color: #10b981;
+            font-size: 11px;
+            font-weight: 600;
+            background: rgba(16, 185, 129, 0.1);
+            padding: 4px 8px;
+            border-radius: 6px;
+            backdrop-filter: blur(8px);
+        }
+
+        /* Platform Tab Styling */
+        .platform-tab {
+            transition: all 0.2s ease;
+            font-weight: 600;
+            border-radius: 12px;
+        }
+
+        .platform-tab.active {
+            /* Common active properties */
+            color: white;
+            /* Default active background (purple), will be overridden by platform-specific */
+            background: linear-gradient(135deg, #c5badf 0%, #7c3aed 100%);
+            box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
+        }
+
+        .platform-tab.active .console-icon {
+            /* Ensure icon color is white when active */
+            color: white !important;
+            /* Use important if Tailwind might override */
+        }
+
+        .platform-tab:not(.active) {
+            background: white;
+            color: #6b7280;
+            border: 2px solid #e5e7eb;
+        }
+
+        .platform-tab:not(.active) .console-icon {
+            color: #6b7280;
+            /* Match non-active text color */
+        }
+
+        .platform-tab:not(.active):hover {
+            border-color: #d1d5db;
+            background: #f9fafb;
+        }
+
+        /* Platform-specific active styles */
+        .platform-tab.active-ps {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            /* Blue gradient for PlayStation */
+            box-shadow: 0 4px 16px rgba(0, 123, 255, 0.3);
+        }
+
+        .platform-tab.active-xbox {
+            background: linear-gradient(135deg, #10B981 0%, #059669 100%);
+            /* FIFA Green for Xbox */
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
+        }
+
+        .platform-tab.active-pc {
+            background: linear-gradient(135deg, #6c757d 0%, #343a40 100%);
+            /* Gray gradient for PC */
+            box-shadow: 0 4px 16px rgba(108, 117, 125, 0.3);
+        }
+
+
+        .sticky-checkout {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(0, 0, 0, 0.08);
+            box-shadow: 0 -8px 32px rgba(0, 0, 0, 0.12);
+        }
+
+        .checkout-btn {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+        }
+
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+        }
+
+        .apple-pay-btn {
+            background: #000;
+            color: white;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .apple-pay-btn:hover {
+            background: #1f1f1f;
+            transform: translateY(-2px);
+        }
+
+        .discount-badge {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(239, 68, 68, 0.3);
+        }
+
+        .price-old {
+            color: #9ca3af;
+            text-decoration: line-through;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .price-new {
+            color: #111827;
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        /* Console Icons */
+        .console-icon {
+            font-size: 1.25rem;
+            /* Approx 20px */
+            line-height: 1;
+        }
+
+
+        /* Responsive Grid */
+        @media (min-width: 768px) {
+            .desktop-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 1.5rem;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .desktop-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .slide-up {
+            animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Header styles */
+        .header-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
+
+        .logo-text {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen">
+    <!-- Header -->
+    <header class="header-gradient text-white sticky top-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-4">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="fut-coin"></div>
+                    <h1 class="logo-text text-xl md:text-2xl font-black">FC COINS STORE</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="hidden md:flex items-center gap-2 text-fifa-gold text-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Safe & Secure
+                    </div>
+                    <div class="hidden md:flex items-center gap-2 text-fifa-green text-sm">
+                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        Fast Delivery
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Platform Selection -->
+    <div class="bg-white shadow-sm sticky top-16 md:top-20 z-40">
+        <div class="container mx-auto px-4 py-4">
+            <div class="grid grid-cols-3 gap-3 max-w-md mx-auto md:max-w-lg">
+                <button class="platform-tab py-3 px-4 text-sm flex items-center justify-center gap-2"
+                    data-platform="ps">
+                    <i class="fab fa-playstation console-icon"></i>
+                    <span class="hidden sm:inline">PlayStation</span>
+                    <span class="sm:hidden">PS</span>
+                </button>
+                <button class="platform-tab active py-3 px-4 text-sm flex items-center justify-center gap-2"
+                    data-platform="xbox">
+                    <i class="fab fa-xbox console-icon"></i>
+                    <span class="hidden sm:inline">Xbox</span>
+                    <span class="sm:hidden">Xbox</span>
+                </button>
+                <button class="platform-tab py-3 px-4 text-sm flex items-center justify-center gap-2"
+                    data-platform="pc">
+                    <i class="fas fa-desktop console-icon"></i>
+                    <span class="hidden sm:inline">PC</span>
+                    <span class="sm:hidden">PC</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Products Grid -->
+    <main class="container mx-auto px-4 py-6 pb-32">
+        <div class="grid grid-cols-2 gap-4 md:hidden">
+            <!-- Mobile Grid - 50K Coins -->
+            <div class="product-card" data-coins="50" data-price="12.99" data-original="24.99" data-gift="5"
+                data-discount="48">
+                <div class="coin-background h-32 flex flex-col items-center justify-center relative p-3">
+                    <div class="flex items-center gap-1 mb-2">
+                        <div class="fut-coin scale-75"></div>
+                    </div>
+                    <div class="coin-amount">50K</div>
+                    <div class="absolute top-2 right-2 gift-badge">+5K🎁</div>
+                    <div class="delivery-info absolute bottom-2 left-2 flex items-center gap-1">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-xs">30-60 min</span>
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-2">50K SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <div class="price-old mb-1">$24.99</div>
+                            <div class="price-new">$12.99</div>
+                        </div>
+                        <div class="discount-badge">-48%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="fut-coin scale-50"></div>
+                        <span class="text-xs text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Grid - 500K Coins -->
+            <div class="product-card" data-coins="500" data-price="89.99" data-original="179.99" data-gift="50"
+                data-discount="50">
+                <div class="coin-background h-32 flex flex-col items-center justify-center relative p-3">
+                    <div class="flex items-center gap-1 mb-2">
+                        <div class="fut-coin scale-75"></div>
+                    </div>
+                    <div class="coin-amount">500K</div>
+                    <div class="absolute top-2 right-2 gift-badge">+50K🎁</div>
+                    <div class="delivery-info absolute bottom-2 left-2 flex items-center gap-1">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-xs">30-60 min</span>
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-2">500K SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <div class="price-old mb-1">$179.99</div>
+                            <div class="price-new">$89.99</div>
+                        </div>
+                        <div class="discount-badge">-50%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="fut-coin scale-50"></div>
+                        <span class="text-xs text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Grid - 2.3M Coins (Featured) -->
+            <div class="product-card" data-coins="2300" data-price="399.99" data-original="799.99" data-gift="300"
+                data-discount="50">
+                <div class="coin-background featured h-32 flex flex-col items-center justify-center relative p-3">
+                    <div class="flex items-center gap-1 mb-2">
+                        <div class="fut-coin scale-75"></div>
+                    </div>
+                    <div class="coin-amount">2.3M</div>
+                    <div class="absolute top-2 right-2 gift-badge">+300K🎁</div>
+                    <div class="delivery-info absolute bottom-2 left-2 flex items-center gap-1">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-xs">30-60 min</span>
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-2">2.3M SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <div class="price-old mb-1">$799.99</div>
+                            <div class="price-new">$399.99</div>
+                        </div>
+                        <div class="discount-badge">-50%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="fut-coin scale-50"></div>
+                        <span class="text-xs text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mobile Grid - 5M Coins -->
+            <div class="product-card" data-coins="5000" data-price="799.99" data-original="1599.99" data-gift="500"
+                data-discount="50">
+                <div class="coin-background h-32 flex flex-col items-center justify-center relative p-3">
+                    <div class="flex items-center gap-1 mb-2">
+                        <div class="fut-coin scale-75"></div>
+                    </div>
+                    <div class="coin-amount">5M</div>
+                    <div class="absolute top-2 right-2 gift-badge">+500K🎁</div>
+                    <div class="delivery-info absolute bottom-2 left-2 flex items-center gap-1">
+                        <svg width="12" height="12" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        <span class="text-xs">30-60 min</span>
+                    </div>
+                </div>
+                <div class="p-3">
+                    <h3 class="font-semibold text-gray-800 text-sm mb-2">5M SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-2">
+                        <div>
+                            <div class="price-old mb-1">$1599.99</div>
+                            <div class="price-new">$799.99</div>
+                        </div>
+                        <div class="discount-badge">-50%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-2">
+                        <div class="fut-coin scale-50"></div>
+                        <span class="text-xs text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Desktop Grid -->
+        <div class="hidden md:block desktop-grid">
+            <!-- Desktop - 50K Coins -->
+            <div class="product-card" data-coins="50" data-price="12.99" data-original="24.99" data-gift="5"
+                data-discount="48">
+                <div class="coin-background h-40 flex flex-col items-center justify-center relative p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="fut-coin"></div>
+                    </div>
+                    <div class="coin-amount">50K</div>
+                    <div class="absolute top-3 right-3 gift-badge">+5K🎁</div>
+                    <div class="delivery-info absolute bottom-3 left-3 flex items-center gap-1">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        30-60 min
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3 class="font-semibold text-gray-800 text-lg mb-3">50K SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <div class="price-old mb-1">$24.99</div>
+                            <div class="price-new text-2xl">$12.99</div>
+                        </div>
+                        <div class="discount-badge">-48%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <div class="fut-coin scale-75"></div>
+                        <span class="text-sm text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop - 500K Coins -->
+            <div class="product-card" data-coins="500" data-price="89.99" data-original="179.99" data-gift="50"
+                data-discount="50">
+                <div class="coin-background h-40 flex flex-col items-center justify-center relative p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="fut-coin"></div>
+                    </div>
+                    <div class="coin-amount">500K</div>
+                    <div class="absolute top-3 right-3 gift-badge">+50K🎁</div>
+                    <div class="delivery-info absolute bottom-3 left-3 flex items-center gap-1">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        30-60 min
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3 class="font-semibold text-gray-800 text-lg mb-3">500K SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <div class="price-old mb-1">$179.99</div>
+                            <div class="price-new text-2xl">$89.99</div>
+                        </div>
+                        <div class="discount-badge">-50%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <div class="fut-coin scale-75"></div>
+                        <span class="text-sm text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop - 2.3M Coins (Featured) -->
+            <div class="product-card" data-coins="2300" data-price="399.99" data-original="799.99" data-gift="300"
+                data-discount="50">
+                <div class="coin-background featured h-40 flex flex-col items-center justify-center relative p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="fut-coin"></div>
+                    </div>
+                    <div class="coin-amount">2.3M</div>
+                    <div class="absolute top-3 right-3 gift-badge">+300K🎁</div>
+                    <div class="delivery-info absolute bottom-3 left-3 flex items-center gap-1">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        30-60 min
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3 class="font-semibold text-gray-800 text-lg mb-3">2.3M SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <div class="price-old mb-1">$799.99</div>
+                            <div class="price-new text-2xl">$399.99</div>
+                        </div>
+                        <div class="discount-badge">-50%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <div class="fut-coin scale-75"></div>
+                        <span class="text-sm text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Desktop - 5M Coins -->
+            <div class="product-card" data-coins="5000" data-price="799.99" data-original="1599.99" data-gift="500"
+                data-discount="50">
+                <div class="coin-background h-40 flex flex-col items-center justify-center relative p-4">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="fut-coin"></div>
+                    </div>
+                    <div class="coin-amount">5M</div>
+                    <div class="absolute top-3 right-3 gift-badge">+500K🎁</div>
+                    <div class="delivery-info absolute bottom-3 left-3 flex items-center gap-1">
+                        <svg width="14" height="14" fill="currentColor" viewBox="0 0 20 20">
+                            <path fill-rule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
+                                clip-rule="evenodd" />
+                        </svg>
+                        30-60 min
+                    </div>
+                </div>
+                <div class="p-5">
+                    <h3 class="font-semibold text-gray-800 text-lg mb-3">5M SAFE COINS</h3>
+                    <div class="flex items-center justify-between mb-3">
+                        <div>
+                            <div class="price-old mb-1">$1599.99</div>
+                            <div class="price-new text-2xl">$799.99</div>
+                        </div>
+                        <div class="discount-badge">-50%</div>
+                    </div>
+                    <div class="flex items-center gap-2 mt-4">
+                        <div class="fut-coin scale-75"></div>
+                        <span class="text-sm text-gray-500 platform-compatibility-text">Xbox Compatible</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Sticky Checkout Card -->
+    <div class="sticky-checkout fixed bottom-0 left-0 right-0 z-50 slide-up" id="stickyCard" style="display: none;">
+        <div class="container mx-auto px-4 py-4">
+            <!-- Top Info Bar -->
+            <div class="flex items-center justify-between mb-3">
+                <div class="flex items-center gap-3">
+                    <div class="gift-badge text-xs" id="giftInfo">🎁 50K Gift + Cashback</div>
+                    <div class="text-fifa-green text-sm font-medium flex items-center gap-1">
+                        <div class="w-2 h-2 bg-fifa-green rounded-full animate-pulse"></div>
+                        Delivery 30-60 min
+                    </div>
+                </div>
+                <div class="hidden md:flex items-center gap-2 text-xs text-gray-500">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z"
+                            clip-rule="evenodd" />
+                    </svg>
+                    SSL Secured
+                </div>
+            </div>
+
+            <!-- Product Title with Edit -->
+            <div class="flex items-center justify-between mb-4">
+                <div class="font-bold text-gray-800 text-lg" id="productTitle">
+                    50K FC25 COINS
+                </div>
+                <button
+                    class="text-orange-500 px-3 py-1 rounded-lg hover:bg-orange-50 transition-colors flex items-center gap-1"
+                    id="editBtn">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+                        <path
+                            d="M13.586 3.586a2 2 0 112.828 2.828l-.793.793-2.828-2.828.793-.793zM11.379 5.793L3 14.172V17h2.828l8.38-8.379-2.828-2.828z" />
+                    </svg>
+                    <span class="hidden sm:inline">Edit</span>
+                </button>
+            </div>
+
+            <!-- Price and Action Buttons -->
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-3xl font-black text-gray-900" id="finalPrice">$12.99</div>
+                    <div class="text-fifa-green text-sm font-semibold" id="savings">Save $12.00 (48%)</div>
+                </div>
+
+                <div class="flex gap-3">
+                    <button
+                        class="apple-pay-btn px-4 md:px-6 py-3 rounded-xl flex items-center gap-2 text-sm md:text-base">
+                        <svg width="18" height="22" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
+                        </svg>
+                        <span class="hidden sm:inline">Apple Pay</span>
+                        <span class="sm:hidden">Pay</span>
+                    </button>
+                    <button class="checkout-btn px-6 md:px-8 py-3 rounded-xl text-sm md:text-base font-bold">
+                        CHECKOUT
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const platformTabs = document.querySelectorAll('.platform-tab');
+        let currentPlatform = 'xbox'; // Default platform
+        const stickyCard = document.getElementById('stickyCard');
+        const productCards = document.querySelectorAll('.product-card');
+        let selectedProduct = null;
+
+        function setActiveTabStyles(activeTabElement) {
+            platformTabs.forEach(t => {
+                t.classList.remove('active', 'active-ps', 'active-xbox', 'active-pc');
+            });
+
+            activeTabElement.classList.add('active');
+            const platform = activeTabElement.dataset.platform;
+            if (platform === 'ps') {
+                activeTabElement.classList.add('active-ps');
+            } else if (platform === 'xbox') {
+                activeTabElement.classList.add('active-xbox');
+            } else if (platform === 'pc') {
+                activeTabElement.classList.add('active-pc');
+            }
+        }
+
+        platformTabs.forEach(tab => {
+            if (tab.dataset.platform === currentPlatform) {
+                setActiveTabStyles(tab); // Set initial active tab style
+            }
+
+            tab.addEventListener('click', () => {
+                currentPlatform = tab.dataset.platform;
+                setActiveTabStyles(tab);
+                updateProductPlatformText(currentPlatform);
+                if (selectedProduct) {
+                    updateStickyCard(selectedProduct);
+                }
+            });
+        });
+
+        productCards.forEach(card => {
+            card.addEventListener('click', () => {
+                productCards.forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                selectedProduct = card;
+                updateStickyCard(card);
+                stickyCard.style.display = 'block';
+                setTimeout(() => stickyCard.classList.add('slide-up'), 10); // Apply animation class
+            });
+        });
+
+        function updateStickyCard(card) {
+            const coins = card.dataset.coins;
+            const price = parseFloat(card.dataset.price);
+            const originalPrice = parseFloat(card.dataset.original);
+            const gift = card.dataset.gift;
+            const discount = card.dataset.discount;
+
+            const platformDisplayNames = {
+                'ps': 'PlayStation',
+                'xbox': 'Xbox',
+                'pc': 'PC'
+            };
+
+            let coinDisplay = coins;
+            if (coins >= 1000) {
+                coinDisplay = (coins / 1000).toFixed(1).replace('.0', '') + 'M';
+            } else {
+                coinDisplay = coins + 'K';
+            }
+
+            document.getElementById('productTitle').textContent =
+                `${coinDisplay} FC25 COINS - ${platformDisplayNames[currentPlatform]}`;
+            document.getElementById('finalPrice').textContent = `$${price.toFixed(2)}`;
+            const savings = originalPrice - price;
+            document.getElementById('savings').textContent =
+                `Save $${savings.toFixed(2)} (${discount}%)`;
+            document.getElementById('giftInfo').textContent = `🎁 ${gift}K Gift + Cashback`;
+        }
+
+        function updateProductPlatformText(platform) {
+            const platformCompatibilityNames = {
+                'ps': 'PlayStation Compatible',
+                'xbox': 'Xbox Compatible',
+                'pc': 'PC Compatible'
+            };
+            const textElements = document.querySelectorAll('.platform-compatibility-text');
+            textElements.forEach(el => {
+                el.textContent = platformCompatibilityNames[platform];
+            });
+        }
+
+        document.getElementById('editBtn').addEventListener('click', () => {
+            if (selectedProduct) {
+                selectedProduct.classList.remove('selected');
+            }
+            stickyCard.classList.remove('slide-up'); // Remove animation class
+            setTimeout(() => {
+                stickyCard.style.display = 'none';
+            }, 300); // Hide after animation
+            selectedProduct = null;
+        });
+
+        document.querySelector('.checkout-btn').addEventListener('click', () => {
+            alert('Redirecting to secure checkout...');
+        });
+
+        document.querySelector('.apple-pay-btn').addEventListener('click', () => {
+            if (window.ApplePaySession && ApplePaySession.canMakePayments()) {
+                alert('Apple Pay payment initiated...');
+            } else {
+                alert('Apple Pay not available on this device or not configured.');
+            }
+        });
+
+        // Initial setup
+        updateProductPlatformText(currentPlatform); // Set initial platform text on cards
+
+        // Auto-select first product for demo after a short delay
+        setTimeout(() => {
+            if (productCards.length > 0) {
+                let firstVisibleProductCard;
+                if (window.innerWidth < 768) { // md breakpoint
+                    firstVisibleProductCard = document.querySelector('.grid.md\\:hidden .product-card');
+                } else {
+                    firstVisibleProductCard = document.querySelector('.hidden.md\\:block .product-card');
+                }
+
+                if (firstVisibleProductCard) {
+                    firstVisibleProductCard.click();
+                } else if (productCards[0]) { // Fallback
+                    productCards[0].click();
+                }
+            }
+        }, 500);
+
+    </script>
+</body>
+
+</html>
