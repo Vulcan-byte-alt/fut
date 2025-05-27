@@ -30,7 +30,45 @@
         }
 
         .coin-background {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 30%, #1e293b 100%);
+            --s: 22px; /* Influences the density of the hexagon pattern. Smaller means denser. */
+            --hex-line-thickness: 1px; /* Thickness of the hexagon lines */
+
+            /* Default state variables */
+            --hex-line-color: rgba(15, 23, 42, 0.15); /* Subtle dark line color for default background */
+            --base-gradient: linear-gradient(135deg, #1e293b 0%, #334155 30%, #1e293b 100%);
+
+            background-image:
+                /* Layer 3: Hexagon lines at 30deg */
+                linear-gradient(30deg,
+                    transparent calc(50% - var(--hex-line-thickness)/2),
+                    var(--hex-line-color) calc(50% - var(--hex-line-thickness)/2),
+                    var(--hex-line-color) calc(50% + var(--hex-line-thickness)/2),
+                    transparent calc(50% + var(--hex-line-thickness)/2)
+                ),
+                /* Layer 2: Hexagon lines at -30deg (or 150deg) */
+                linear-gradient(-30deg,
+                    transparent calc(50% - var(--hex-line-thickness)/2),
+                    var(--hex-line-color) calc(50% - var(--hex-line-thickness)/2),
+                    var(--hex-line-color) calc(50% + var(--hex-line-thickness)/2),
+                    transparent calc(50% + var(--hex-line-thickness)/2)
+                ),
+                /* Layer 1: Hexagon lines at 90deg (vertical) */
+                linear-gradient(90deg,
+                    transparent calc(50% - var(--hex-line-thickness)/2),
+                    var(--hex-line-color) calc(50% - var(--hex-line-thickness)/2),
+                    var(--hex-line-color) calc(50% + var(--hex-line-thickness)/2),
+                    transparent calc(50% + var(--hex-line-thickness)/2)
+                ),
+                /* Layer 0: Base visual gradient */
+                var(--base-gradient);
+
+            background-size:
+                /* Size for the repeating unit of hexagon lines: width = s*sqrt(3), height = s */
+                calc(var(--s) * 1.73205) var(--s), /* For 30deg lines */
+                calc(var(--s) * 1.73205) var(--s), /* For -30deg lines */
+                calc(var(--s) * 1.73205) var(--s), /* For 90deg lines */
+                auto; /* Base gradient covers the whole area */
+
             position: relative;
             overflow: hidden;
         }
@@ -46,10 +84,21 @@
                 radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
                 radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
                 radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
+            z-index: 1; /* Ensure light spots are above the hexagon pattern but below content */
         }
 
         .coin-background.featured {
-            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 30%, #a855f7 100%);
+            /* Override CSS variables for the featured state */
+            --hex-line-color: rgba(91, 33, 182, 0.20); /* Subtle dark purple line for featured background */
+            --base-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 30%, #a855f7 100%);
+            /* background-image and background-size from .coin-background will use these new variable values */
+        }
+
+        .coin-background.featured::before {
+            background-image:
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+            z-index: 1; /* Ensure light spots are above the hexagon pattern but below content */
         }
 
         .coin-background.featured::before {
