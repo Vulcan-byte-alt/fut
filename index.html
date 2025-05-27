@@ -5,8 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FC Coins Store - Buy FIFA 25 Coins</title>
-    <link rel="icon" type="image/x-icon"
-        href="fut.png">
+    <link rel="icon" type="image/x-icon" href="fut.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -17,6 +16,9 @@
                         'fifa-gold': '#FFD700',
                         'fifa-dark': '#0F172A',
                         'fifa-green': '#10B981'
+                    },
+                    animation: {
+                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                     }
                 }
             }
@@ -29,48 +31,43 @@
             font-family: 'Inter', sans-serif;
         }
 
-        .coin-background {
-            --s: 22px; /* Influences the density of the hexagon pattern. Smaller means denser. */
-            --hex-line-thickness: 1px; /* Thickness of the hexagon lines */
+        body {
+            background: #f8fafc;
+        }
 
-            /* Default state variables */
-            --hex-line-color: rgba(15, 23, 42, 0.15); /* Subtle dark line color for default background */
+        .coin-background {
+            --s: 22px;
+            --hex-line-thickness: 1px;
+            --hex-line-color: rgba(15, 23, 42, 0.15);
             --base-gradient: linear-gradient(135deg, #1e293b 0%, #334155 30%, #1e293b 100%);
 
             background-image:
-                /* Layer 3: Hexagon lines at 30deg */
                 linear-gradient(30deg,
                     transparent calc(50% - var(--hex-line-thickness)/2),
                     var(--hex-line-color) calc(50% - var(--hex-line-thickness)/2),
                     var(--hex-line-color) calc(50% + var(--hex-line-thickness)/2),
-                    transparent calc(50% + var(--hex-line-thickness)/2)
-                ),
-                /* Layer 2: Hexagon lines at -30deg (or 150deg) */
+                    transparent calc(50% + var(--hex-line-thickness)/2)),
                 linear-gradient(-30deg,
                     transparent calc(50% - var(--hex-line-thickness)/2),
                     var(--hex-line-color) calc(50% - var(--hex-line-thickness)/2),
                     var(--hex-line-color) calc(50% + var(--hex-line-thickness)/2),
-                    transparent calc(50% + var(--hex-line-thickness)/2)
-                ),
-                /* Layer 1: Hexagon lines at 90deg (vertical) */
+                    transparent calc(50% + var(--hex-line-thickness)/2)),
                 linear-gradient(90deg,
                     transparent calc(50% - var(--hex-line-thickness)/2),
                     var(--hex-line-color) calc(50% - var(--hex-line-thickness)/2),
                     var(--hex-line-color) calc(50% + var(--hex-line-thickness)/2),
-                    transparent calc(50% + var(--hex-line-thickness)/2)
-                ),
-                /* Layer 0: Base visual gradient */
+                    transparent calc(50% + var(--hex-line-thickness)/2)),
                 var(--base-gradient);
 
             background-size:
-                /* Size for the repeating unit of hexagon lines: width = s*sqrt(3), height = s */
-                calc(var(--s) * 1.73205) var(--s), /* For 30deg lines */
-                calc(var(--s) * 1.73205) var(--s), /* For -30deg lines */
-                calc(var(--s) * 1.73205) var(--s), /* For 90deg lines */
-                auto; /* Base gradient covers the whole area */
+                calc(var(--s) * 1.73205) var(--s),
+                calc(var(--s) * 1.73205) var(--s),
+                calc(var(--s) * 1.73205) var(--s),
+                auto;
 
             position: relative;
             overflow: hidden;
+            transition: all 0.3s ease;
         }
 
         .coin-background::before {
@@ -81,68 +78,41 @@
             right: 0;
             bottom: 0;
             background-image:
-                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.05) 0%, transparent 50%),
-                radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.08) 0%, transparent 50%);
-            z-index: 1; /* Ensure light spots are above the hexagon pattern but below content */
+                radial-gradient(circle at 20% 50%, rgba(255, 215, 0, 0.12) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 215, 0, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 40% 80%, rgba(255, 215, 0, 0.1) 0%, transparent 50%);
+            z-index: 1;
         }
 
         .coin-background.featured {
-            /* Override CSS variables for the featured state */
-            --hex-line-color: rgba(91, 33, 182, 0.20); /* Subtle dark purple line for featured background */
+            --hex-line-color: rgba(91, 33, 182, 0.20);
             --base-gradient: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 30%, #a855f7 100%);
-            /* background-image and background-size from .coin-background will use these new variable values */
+            box-shadow: 0 8px 30px rgba(124, 58, 237, 0.25);
         }
 
         .coin-background.featured::before {
             background-image:
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
-            z-index: 1; /* Ensure light spots are above the hexagon pattern but below content */
-        }
-
-        .coin-background.featured::before {
-            background-image:
-                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
-                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.05) 0%, transparent 50%);
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
         }
 
         .fut-coin {
             width: 32px;
             height: 32px;
-            /* IF YOUR IMAGE IS THE FULL COIN:
-               Remove or comment out the original gradient background.
-               background: linear-gradient(135deg, #ffd700 0%, #ffed4a 30%, #ffd700 70%, #daa520 100%);
-            */
-
-            /* === ADD THIS SECTION FOR THE IMAGE === */
-            /* REPLACE THE URL BELOW with your actual FC Mobile Coin image (URL or base64) */
-            /* This is a placeholder SVG: */
             background-image: url('fut.png');
             background-size: contain;
-            /* Or 'cover', or a percentage like '90% 90%' */
             background-repeat: no-repeat;
             background-position: center;
-            /* ======================================= */
-
             border-radius: 50%;
-            /* These text-related properties are no longer needed if it's an image */
-            /* display: flex; */
-            /* align-items: center; */
-            /* justify-content: center; */
-            /* font-weight: 900; */
-            /* font-size: 10px; */
-            /* color: #1a202c; */
             box-shadow:
-                /* Adjust this shadow if your coin isn't primarily gold */
                 0 4px 12px rgba(255, 215, 0, 0.4),
                 inset 0 2px 4px rgba(255, 255, 255, 0.3),
                 inset 0 -2px 4px rgba(0, 0, 0, 0.2);
             position: relative;
+            transition: transform 0.3s ease;
         }
 
         .fut-coin::after {
-            /* This shine effect might still look good on top of an image */
             content: '';
             position: absolute;
             top: 2px;
@@ -153,13 +123,19 @@
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.4) 0%, transparent 50%);
         }
 
-
         .coin-amount {
             font-size: clamp(1.8rem, 4vw, 2.5rem);
             font-weight: 900;
             color: #ffd700;
             text-shadow: 0 2px 8px rgba(0, 0, 0, 0.5);
             letter-spacing: -1px;
+            position: relative;
+            transition: all 0.3s ease;
+            z-index: 2;
+        }
+
+        .product-card:hover .coin-amount {
+            text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6);
         }
 
         .gift-badge {
@@ -170,6 +146,13 @@
             font-size: 10px;
             font-weight: 700;
             box-shadow: 0 2px 8px rgba(16, 185, 129, 0.3);
+            transition: all 0.2s ease;
+            transform-origin: center;
+            z-index: 2;
+        }
+
+        .product-card:hover .gift-badge {
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4);
         }
 
         .product-card {
@@ -180,6 +163,7 @@
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
             border: 2px solid transparent;
+            position: relative;
         }
 
         .product-card:hover {
@@ -202,6 +186,14 @@
             padding: 4px 8px;
             border-radius: 6px;
             backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            z-index: 2;
+        }
+
+        .delivery-info svg {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
         }
 
         /* Platform Tab Styling */
@@ -209,20 +201,18 @@
             transition: all 0.2s ease;
             font-weight: 600;
             border-radius: 12px;
+            position: relative;
+            overflow: hidden;
         }
 
         .platform-tab.active {
-            /* Common active properties */
             color: white;
-            /* Default active background (purple), will be overridden by platform-specific */
             background: linear-gradient(135deg, #c5badf 0%, #7c3aed 100%);
             box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
         }
 
         .platform-tab.active .console-icon {
-            /* Ensure icon color is white when active */
-            color: white !important;
-            /* Use important if Tailwind might override */
+            color: white;
         }
 
         .platform-tab:not(.active) {
@@ -233,33 +223,33 @@
 
         .platform-tab:not(.active) .console-icon {
             color: #6b7280;
-            /* Match non-active text color */
         }
 
         .platform-tab:not(.active):hover {
             border-color: #d1d5db;
             background: #f9fafb;
+            color: #4b5563;
+        }
+
+        .platform-tab:not(.active):hover .console-icon {
+            color: #4b5563;
         }
 
         /* Platform-specific active styles */
         .platform-tab.active-ps {
             background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            /* Blue gradient for PlayStation */
             box-shadow: 0 4px 16px rgba(0, 123, 255, 0.3);
         }
 
         .platform-tab.active-xbox {
             background: linear-gradient(135deg, #10B981 0%, #059669 100%);
-            /* FIFA Green for Xbox */
             box-shadow: 0 4px 16px rgba(16, 185, 129, 0.3);
         }
 
         .platform-tab.active-pc {
             background: linear-gradient(135deg, #6c757d 0%, #343a40 100%);
-            /* Gray gradient for PC */
             box-shadow: 0 4px 16px rgba(108, 117, 125, 0.3);
         }
-
 
         .sticky-checkout {
             background: rgba(255, 255, 255, 0.95);
@@ -275,11 +265,29 @@
             letter-spacing: 0.5px;
             transition: all 0.2s ease;
             box-shadow: 0 4px 16px rgba(239, 68, 68, 0.3);
+            position: relative;
+            overflow: hidden;
         }
 
         .checkout-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 24px rgba(239, 68, 68, 0.4);
+        }
+
+        .checkout-btn::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .checkout-btn:hover::after {
+            opacity: 1;
         }
 
         .apple-pay-btn {
@@ -316,30 +324,103 @@
             color: #111827;
             font-size: 20px;
             font-weight: 800;
+            transition: all 0.2s ease;
+        }
+
+        .product-card:hover .price-new {
+            color: #4c1d95;
+            /* Subtle darker purple on hover - not rainbow */
         }
 
         /* Console Icons */
         .console-icon {
             font-size: 1.25rem;
-            /* Approx 20px */
             line-height: 1;
+            transition: transform 0.2s ease;
         }
 
+        /* Header styles */
+        .header-gradient {
+            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        }
 
-        /* Responsive Grid */
+        .logo-text {
+            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+        }
+
+        /* Security Badge */
+        .security-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            background-color: rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .security-badge:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        /* Mobile Specific Styles */
+        @media (max-width: 767px) {
+            .product-card {
+                border-radius: 12px;
+            }
+
+            .sticky-checkout {
+                padding-bottom: env(safe-area-inset-bottom);
+                /* For iOS devices with home indicator */
+            }
+
+            .fut-coin {
+                width: 28px;
+                height: 28px;
+            }
+
+            .platform-tab {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Responsive Grid - Improved PC Layout */
         @media (min-width: 768px) {
             .desktop-grid {
                 display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-                gap: 1.5rem;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 1.25rem;
                 max-width: 1200px;
                 margin: 0 auto;
+                padding: 0 1rem;
             }
         }
 
         @media (min-width: 1024px) {
             .desktop-grid {
                 grid-template-columns: repeat(4, 1fr);
+                gap: 1.5rem;
+            }
+
+            /* Better alignment for desktop */
+            .desktop-grid .product-card {
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .desktop-grid .product-card>div:last-child {
+                flex-grow: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .desktop-grid .product-card>div:last-child>div:last-child {
+                margin-top: auto;
             }
         }
 
@@ -359,17 +440,44 @@
             animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        /* Header styles */
-        .header-gradient {
-            background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
         }
 
-        .logo-text {
-            background: linear-gradient(135deg, #ffd700 0%, #ffed4a 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            font-weight: 900;
+        /* New Featured Badge */
+        .featured-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-bottom-right-radius: 8px;
+            z-index: 10;
+        }
+
+        /* Best Seller Badge */
+        .best-seller-badge {
+            position: absolute;
+            top: 0;
+            left: 0;
+            background: linear-gradient(135deg, #ffa500 0%, #ff8c00 100%);
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-bottom-right-radius: 8px;
+            z-index: 10;
         }
     </style>
 </head>
@@ -384,21 +492,21 @@
                     <h1 class="logo-text text-xl md:text-2xl font-black">FC COINS STORE</h1>
                 </div>
                 <div class="flex items-center gap-3">
-                    <div class="hidden md:flex items-center gap-2 text-fifa-gold text-sm">
+                    <div class="hidden md:flex items-center gap-2 security-badge">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
                                 clip-rule="evenodd" />
                         </svg>
-                        Safe & Secure
+                        <span class="text-fifa-gold text-sm">Safe & Secure</span>
                     </div>
-                    <div class="hidden md:flex items-center gap-2 text-fifa-green text-sm">
+                    <div class="hidden md:flex items-center gap-2 security-badge">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                             <path fill-rule="evenodd"
                                 d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z"
                                 clip-rule="evenodd" />
                         </svg>
-                        Fast Delivery
+                        <span class="text-fifa-green text-sm">Fast Delivery</span>
                     </div>
                 </div>
             </div>
@@ -415,7 +523,7 @@
                     <span class="hidden sm:inline">PlayStation</span>
                     <span class="sm:hidden">PS</span>
                 </button>
-                <button class="platform-tab active py-3 px-4 text-sm flex items-center justify-center gap-2"
+                <button class="platform-tab active active-xbox py-3 px-4 text-sm flex items-center justify-center gap-2"
                     data-platform="xbox">
                     <i class="fab fa-xbox console-icon"></i>
                     <span class="hidden sm:inline">Xbox</span>
@@ -437,6 +545,7 @@
             <!-- Mobile Grid - 50K Coins -->
             <div class="product-card" data-coins="50" data-price="12.99" data-original="24.99" data-gift="5"
                 data-discount="48">
+                <div class="best-seller-badge">BEST SELLER</div>
                 <div class="coin-background h-32 flex flex-col items-center justify-center relative p-3">
                     <div class="flex items-center gap-1 mb-2">
                         <div class="fut-coin scale-75"></div>
@@ -505,6 +614,7 @@
             <!-- Mobile Grid - 2.3M Coins (Featured) -->
             <div class="product-card" data-coins="2300" data-price="399.99" data-original="799.99" data-gift="300"
                 data-discount="50">
+                <div class="featured-badge">FEATURED</div>
                 <div class="coin-background featured h-32 flex flex-col items-center justify-center relative p-3">
                     <div class="flex items-center gap-1 mb-2">
                         <div class="fut-coin scale-75"></div>
@@ -571,11 +681,12 @@
             </div>
         </div>
 
-        <!-- Desktop Grid -->
+        <!-- Desktop Grid - Improved Alignment -->
         <div class="hidden md:block desktop-grid">
             <!-- Desktop - 50K Coins -->
             <div class="product-card" data-coins="50" data-price="12.99" data-original="24.99" data-gift="5"
                 data-discount="48">
+                <div class="best-seller-badge">BEST SELLER</div>
                 <div class="coin-background h-40 flex flex-col items-center justify-center relative p-4">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="fut-coin"></div>
@@ -644,6 +755,7 @@
             <!-- Desktop - 2.3M Coins (Featured) -->
             <div class="product-card" data-coins="2300" data-price="399.99" data-original="799.99" data-gift="300"
                 data-discount="50">
+                <div class="featured-badge">FEATURED</div>
                 <div class="coin-background featured h-40 flex flex-col items-center justify-center relative p-4">
                     <div class="flex items-center gap-2 mb-3">
                         <div class="fut-coin"></div>
@@ -716,11 +828,11 @@
         <div class="container mx-auto px-4 py-4">
             <!-- Top Info Bar -->
             <div class="flex items-center justify-between mb-3">
-                <div class="flex items-center gap-3">
-                    <div class="gift-badge text-xs" id="giftInfo">🎁 50K Gift + Cashback</div>
+                <div class="flex items-center gap-3 flex-wrap">
+                    <div class="gift-badge text-xs" id="giftInfo">🎁 +5K Gift</div>
                     <div class="text-fifa-green text-sm font-medium flex items-center gap-1">
                         <div class="w-2 h-2 bg-fifa-green rounded-full animate-pulse"></div>
-                        Delivery 30-60 min
+                        <span class="hidden xs:inline">Delivery</span> 30-60 min
                     </div>
                 </div>
                 <div class="hidden md:flex items-center gap-2 text-xs text-gray-500">
@@ -735,8 +847,8 @@
 
             <!-- Product Title with Edit -->
             <div class="flex items-center justify-between mb-4">
-                <div class="font-bold text-gray-800 text-lg" id="productTitle">
-                    50K FC25 COINS
+                <div class="font-bold text-gray-800 text-base md:text-lg" id="productTitle">
+                    50K FC25 COINS - XBOX
                 </div>
                 <button
                     class="text-orange-500 px-3 py-1 rounded-lg hover:bg-orange-50 transition-colors flex items-center gap-1"
@@ -752,13 +864,13 @@
             <!-- Price and Action Buttons -->
             <div class="flex items-center justify-between">
                 <div>
-                    <div class="text-3xl font-black text-gray-900" id="finalPrice">$12.99</div>
-                    <div class="text-fifa-green text-sm font-semibold" id="savings">Save $12.00 (48%)</div>
+                    <div class="text-2xl md:text-3xl font-black text-gray-900" id="finalPrice">$12.99</div>
+                    <div class="text-fifa-green text-xs md:text-sm font-semibold" id="savings">Save $12.00 (48%)</div>
                 </div>
 
-                <div class="flex gap-3">
+                <div class="flex gap-2 md:gap-3">
                     <button
-                        class="apple-pay-btn px-4 md:px-6 py-3 rounded-xl flex items-center gap-2 text-sm md:text-base">
+                        class="apple-pay-btn px-3 md:px-6 py-2 md:py-3 rounded-xl flex items-center justify-center gap-2 text-sm md:text-base">
                         <svg width="18" height="22" viewBox="0 0 24 24" fill="currentColor">
                             <path
                                 d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z" />
@@ -766,7 +878,7 @@
                         <span class="hidden sm:inline">Apple Pay</span>
                         <span class="sm:hidden">Pay</span>
                     </button>
-                    <button class="checkout-btn px-6 md:px-8 py-3 rounded-xl text-sm md:text-base font-bold">
+                    <button class="checkout-btn px-4 md:px-8 py-2 md:py-3 rounded-xl text-sm md:text-base font-bold">
                         CHECKOUT
                     </button>
                 </div>
@@ -831,8 +943,8 @@
             const discount = card.dataset.discount;
 
             const platformDisplayNames = {
-                'ps': 'PlayStation',
-                'xbox': 'Xbox',
+                'ps': 'PLAYSTATION',
+                'xbox': 'XBOX',
                 'pc': 'PC'
             };
 
@@ -849,7 +961,7 @@
             const savings = originalPrice - price;
             document.getElementById('savings').textContent =
                 `Save $${savings.toFixed(2)} (${discount}%)`;
-            document.getElementById('giftInfo').textContent = `🎁 ${gift}K Gift + Cashback`;
+            document.getElementById('giftInfo').textContent = `🎁 +${gift}K Gift`;
         }
 
         function updateProductPlatformText(platform) {
@@ -907,7 +1019,6 @@
                 }
             }
         }, 500);
-
     </script>
 </body>
 
